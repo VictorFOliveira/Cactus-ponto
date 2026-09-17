@@ -1,59 +1,177 @@
 # 🌵 Cactus Ponto
 
-Plataforma SaaS de gestão de jornada e registro de ponto da Cactus Tecnologia.
+Plataforma SaaS multi-tenant da Cactus Tecnologia para gestão de jornada, registro de ponto, tratamento de ocorrências, banco de horas, fechamento mensal e exportação de dados para folha/contabilidade.
 
-## Arquitetura oficial
+## Status do projeto
 
-O projeto agora possui uma única arquitetura canônica:
+O núcleo funcional passou por regressão destrutiva cobrindo autenticação, autorização, isolamento entre tenants, cadastro/importação de colaboradores, jornadas, marcações, concorrência/idempotência, virada de madrugada, ajustes, apuração, banco de horas, fechamento, histórico e exportação.
+
+O CI mais recente da etapa de regressão foi concluído com sucesso após as correções de fechamento histórico. O projeto está em **homologação / production hardening**: funcionalmente pronto para testes reais, mas ainda depende da infraestrutura de produção e da validação regulatória específica antes do primeiro cliente pagante.
+
+## Arquitetura
 
 ```text
 Cactus Ponto
 ├── web/        React + Vite + PWA, servido por Nginx
-├── api/        Node.js + Express, autenticação e regras de negócio
-├── db/         PostgreSQL e schema inicial
+├── api/        Node.js + Express
+├── db/         PostgreSQL 17
+├── docs/       documentação operacional e integrações
 └── docker-compose.yml
 ```
 
-Fluxo: `Web/PWA -> API -> PostgreSQL`.
+Fluxo principal:
 
-A aplicação legada que existia em `src/`, `public/` e no `package.json` da raiz foi removida para evitar dois backends/frontends concorrentes.
+```text
+Web/PWA → API → PostgreSQL
+             ↘ Resend
+             ↘ Asaas
+```
 
-## Experiência atual
+## Funcionalidades atuais
 
-- Login com JWT
-- RBAC: Administrador, Gestor e Colaborador
-- Dashboard operacional exclusivo para gestão
-- Experiência mobile-first exclusiva do colaborador
-- Relógio em tempo real e registro de ponto pela API
-- Registro com NSR e hash SHA-256
-- Manifest PWA
-- PostgreSQL 17
-- Docker Compose
-- CI com testes da API e build Web
+- autenticação JWT com identidade revalidada no banco;
+- RBAC: Administrador, RH, Gestor e Colaborador;
+- isolamento multi-tenant por `tenant_id`;
+- dashboard operacional;
+- experiência mobile-first do colaborador;
+- registro guiado de entrada, intervalo, retorno e saída;
+- suporte a jornadas noturnas e jornadas sem intervalo;
+- janelas/tolerâncias de marcação;
+- proteção de concorrência e idempotência do ponto;
+- NSR e hash SHA-256 das marcações;
+- solicitação e aprovação de ajustes;
+- apuração diária e fila de recálculo;
+- banco de horas e ajustes manuais auditados;
+- jornadas semanais, 12x36, 6x1 e personalizadas;
+- exceções, afastamentos, férias e feriados;
+- importação em lote de colaboradores com validação de CPF/matrícula/e-mail;
+- fechamento mensal com bloqueio de pendências;
+- preservação do histórico de colaboradores desligados;
+- reabertura auditada de competência;
+- exportação CSV para folha/contabilidade;
+- configurações de empresa e políticas;
+- PWA;
+- Docker Compose;
+- migrations versionadas;
+- CI com migrations, testes da API, build Web e validação do Compose.
 
-### Usuários de demonstração
+## Integrações
 
-Senha para todos: `Cactus@123`
+### Resend
+
+Rotas pré-configuradas para e-mails transacionais usando `RESEND_API_KEY` e `RESEND_FROM_EMAIL`.
+
+- `GET /api/integrations/status`
+- `POST /api/integrations/email/test`
+
+A base pode ser reutilizada para convite de usuário, recuperação de senha, avisos de cobrança e notificações administrativas.
+
+### Asaas
+
+A cobrança é feita por empresa/tenant, não individualmente por colaborador.
+
+- `GET /api/billing/status`
+- `POST /api/billing/customer`
+- `POST /api/billing/subscription`
+- `POST /api/billing/webhook/asaas`
+
+O preço do plano fica no servidor (`CACTUS_PONTO_PLAN_PRICE`) e não é aceito do frontend. A primeira versão da assinatura suporta PIX e boleto. O webhook usa `asaas-access-token` e `ASAAS_WEBHOOK_TOKEN`.
+
+Por padrão, pagamento confirmado/recebido ativa o tenant; cobrança vencida pode suspender o tenant (`BILLING_SUSPEND_ON_OVERDUE=true`); novo pagamento reativa automaticamente. Como a autenticação consulta `tenants.active`, a suspensão vale também para sessões já existentes nas requisições seguintes.
+
+Detalhes: [`docs/INTEGRATIONS.md`](docs/INTEGRATIONS.md).
+
+## Usuários de demonstração
+
+Ambiente local/demo:
+
+Senha padrão: `Cactus@123`
 
 - `admin@cactusponto.local` — Administrador
+- `rh@cactusponto.local` — RH
 - `gestor@cactusponto.local` — Gestor
 - `colaborador@cactusponto.local` — Colaborador
 
-## Executar a stack completa
+Os usuários e dados demo estão persistidos no PostgreSQL para desenvolvimento. Eles **não devem permanecer no ambiente comercial de produção**.
+
+## Executar localmente
 
 ```bash
 cp .env.example .env
 docker compose up --build
 ```
 
-Web: `http://localhost:8080`
-API: `http://localhost:3333/api/health`
-PostgreSQL: interno à rede Docker.
+Acesso padrão:
+
+- Web: `http://localhost:8080`
+- API health: `http://localhost:3333/api/health`
+- PostgreSQL: interno à rede Docker.
+
+## Variáveis importantes
+
+```env
+POSTGRES_PASSWORD=
+JWT_SECRET=
+CORS_ORIGINS=http://localhost:8080
+VITE_API_URL=http://localhost:3333/api
+
+RESEND_API_KEY=
+RESEND_FROM_EMAIL=
+
+ASAAS_API_KEY=
+ASAAS_API_URL=https://api-sandbox.asaas.com/v3
+ASAAS_WEBHOOK_TOKEN=
+CACTUS_PONTO_PLAN_NAME=STANDARD
+CACTUS_PONTO_PLAN_PRICE=0
+BILLING_SUSPEND_ON_OVERDUE=true
+```
+
+Nunca versione chaves reais.
 
 ## Segurança
 
-Troque `JWT_SECRET` e `POSTGRES_PASSWORD` em produção. Os usuários demo ainda ficam em memória nesta etapa e serão migrados para PostgreSQL na próxima fase.
+Em produção:
 
-## Próxima etapa
+- use `JWT_SECRET` aleatório com pelo menos 32 caracteres;
+- use senha exclusiva do PostgreSQL;
+- configure `CORS_ORIGINS` apenas com os domínios autorizados;
+- mantenha as chaves do Resend e Asaas somente em secrets/variáveis do servidor;
+- use HTTPS;
+- coloque Web/API atrás de reverse proxy;
+- não exponha PostgreSQL publicamente.
 
-Persistir empresas, usuários, colaboradores, jornadas e marcações no PostgreSQL com isolamento por `tenant_id`. Depois: ajustes/aprovações, espelho e relatórios. A trilha regulatória REP-P será implementada e validada separadamente antes de qualquer declaração de conformidade legal.
+A API já aplica headers de segurança, CORS por allowlist, rate limits, validações de entrada, isolamento por tenant, locks de concorrência e auditoria de operações sensíveis.
+
+## CI
+
+O workflow `Cactus Ponto CI` roda em pushes e pull requests para `main` e valida:
+
+1. PostgreSQL de teste;
+2. schema inicial;
+3. migrations de produção;
+4. testes da API;
+5. build da aplicação Web;
+6. `docker compose config`.
+
+O CI atual valida o código, mas **não realiza deploy automático**.
+
+## Antes da produção comercial
+
+Ainda é necessário fechar a camada operacional de produção: domínio, HTTPS, reverse proxy, secrets reais, backup externo com restore testado, monitoramento, ambiente de homologação, remoção dos dados demo e política de deploy/rollback.
+
+Checklist completo: [`docs/PRODUCTION.md`](docs/PRODUCTION.md).
+
+## Conformidade REP-P
+
+O sistema não deve ser anunciado como oficialmente conforme/homologado como REP-P apenas com base na conclusão técnica da aplicação. A trilha regulatória e os formatos/documentos exigidos precisam ser validados separadamente antes de qualquer alegação comercial de conformidade.
+
+## Próximos passos
+
+O foco agora não é adicionar mais módulos de ponto. A sequência recomendada é:
+
+1. homologar Resend e Asaas em Sandbox;
+2. criar tela pública de planos/checkout e onboarding de empresa;
+3. executar o production hardening;
+4. homologar com usuários reais;
+5. validar a trilha regulatória;
+6. liberar o primeiro cliente piloto.
