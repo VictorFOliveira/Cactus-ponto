@@ -15,9 +15,9 @@ jobs:
       - name: API dependencies
         working-directory: api
         run: npm install
-      - name: API syntax
+      - name: API tests
         working-directory: api
-        run: node --check src/server.js
+        run: npm test
       - name: Web dependencies
         working-directory: web
         run: npm install
