@@ -1,0 +1,1 @@
+import{tenantNow}from'./tenant-time.js';export async function operationalToday(tenantId,client=null){return(await tenantNow(tenantId,client)).date}export async function operationalClock(tenantId,client=null){return tenantNow(tenantId,client)}
