@@ -84,6 +84,12 @@ CACTUS_PONTO_PUBLIC_SCHEME=https`); novo pagamento reativa automaticamente. Como
 
 Detalhes: [`docs/INTEGRATIONS.md`](docs/INTEGRATIONS.md).
 
+## Identidade visual por tenant
+
+O painel de **Empresa & políticas** permite configurar nome exibido, logo e três cores da empresa. A rota pessoal `/ponto` carrega essa identidade diretamente do tenant e aplica o tema somente à experiência do colaborador. No rodapé permanece a assinatura discreta **Desenvolvido por Cactus Tecnologia**.
+
+A API expõe `GET /api/me/branding` apenas para usuários autenticados e retorna somente dados visuais públicos do próprio tenant.
+
 ## Rotas de experiência
 
 O mesmo domínio da empresa possui experiências separadas:
