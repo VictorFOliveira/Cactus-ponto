@@ -1,0 +1,3 @@
+import test from'node:test';import assert from'node:assert/strict';import{isIsoDate}from'../src/date-validation.js';import{periodFromDate}from'../src/time-bank.js';
+test('aceita datas reais e rejeita datas normalizadas pelo Date.parse',()=>{assert.equal(isIsoDate('2026-02-28'),true);assert.equal(isIsoDate('2024-02-29'),true);assert.equal(isIsoDate('2026-02-29'),false);assert.equal(isIsoDate('2026-02-31'),false);assert.equal(isIsoDate('2026-13-01'),false)});
+test('período padrão do banco usa a data local já resolvida do tenant',()=>assert.deepEqual(periodFromDate('2026-09-17'),{from:'2026-09-01',to:'2026-09-17'}));
