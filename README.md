@@ -1,51 +1,37 @@
 # 🌵 Cactus Ponto
 
-Plataforma web de gestão de jornada da Cactus Tecnologia.
+Plataforma SaaS de gestão de jornada e registro de ponto da Cactus Tecnologia.
 
-## O que já funciona
-- Dashboard responsivo premium
-- Relógio em tempo real
-- Visão de presença, atrasos, ausências e banco de horas
-- Lista de colaboradores e status de jornada
-- Fluxo de registro de ponto com NSR e hash SHA-256
-- API REST Express
-- PostgreSQL com estrutura de tenants, colaboradores e marcações
-- Modo demonstração sem banco
-- Docker Compose para subir app + banco com um comando
-- CI no GitHub Actions
+## Experiência atual
 
-## Rodar
+- Login com JWT
+- Perfis Administrador, Gestor e Colaborador
+- Dashboard operacional para gestores
+- Experiência mobile-first exclusiva do colaborador
+- Registro de ponto via API com NSR e hash SHA-256
+- Histórico de marcações
+- Banco de horas e jornada no painel
+- Manifest PWA para evolução como app instalável
+- Docker/PostgreSQL e CI
+
+### Usuários de demonstração
+
+Senha para todos: `Cactus@123`
+
+- `admin@cactusponto.local` — Administrador
+- `gestor@cactusponto.local` — Gestor
+- `colaborador@cactusponto.local` — Colaborador
+
+## Executar
+
 ```bash
+cp .env.example .env
 docker compose up --build
 ```
-Acesse `http://localhost:3000`.
 
-Sem Docker:
-```bash
-npm install
-npm run dev
-```
-Sem `DATABASE_URL`, a API entra automaticamente em modo demonstração.
+Web: `http://localhost:5173`
+API: `http://localhost:3333/api/health`
 
-## API
-- `GET /api/health`
-- `GET /api/dashboard`
-- `GET /api/employees`
-- `POST /api/employees`
-- `POST /api/punches`
+## Próximas etapas de produto
 
-## Arquitetura alvo
-O projeto nasce preparado para multiempresa (tenant), RBAC, auditoria imutável, escalas, banco de horas, justificativas, aprovações, relatórios, coletores web/mobile e integrações.
-
-## Conformidade brasileira
-O produto ainda é um MVP técnico e **não deve ser anunciado como REP-P homologado/conforme** nesta fase. Antes do uso como registrador eletrônico oficial, serão implementados e validados integralmente os requisitos vigentes da Portaria MTP nº 671/2021 e alterações, incluindo ARP, NSR, AFD/AEJ, comprovantes, assinatura eletrônica, sincronismo de horário, atestado técnico e registro de software no INPI quando aplicável.
-
-## Próximas etapas
-1. autenticação + RBAC e isolamento multi-tenant;
-2. motor de jornadas/escalas e banco de horas;
-3. solicitações e aprovações;
-4. espelho de ponto e relatórios;
-5. trilha de auditoria/ARP append-only;
-6. requisitos REP-P e geração dos arquivos oficiais;
-7. PWA/coletor mobile e modo offline seguro;
-8. observabilidade, backup e hardening de produção.
+Persistir usuários/sessões/marcações no PostgreSQL, cadastro completo de empresas e colaboradores, escalas, solicitações de ajuste, aprovação, espelho e relatórios. A trilha regulatória REP-P deve ser implementada e validada separadamente antes de qualquer declaração de conformidade legal.
