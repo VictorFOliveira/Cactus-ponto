@@ -6,7 +6,7 @@ Plataforma SaaS multi-tenant da Cactus Tecnologia para gestão de jornada, regis
 
 O núcleo funcional passou por regressão destrutiva cobrindo autenticação, autorização, isolamento entre tenants, cadastro/importação de colaboradores, jornadas, marcações, concorrência/idempotência, virada de madrugada, ajustes, apuração, banco de horas, fechamento, histórico e exportação.
 
-O CI mais recente da etapa de regressão foi concluído com sucesso após as correções de fechamento histórico. O projeto está em **homologação / production hardening**: funcionalmente pronto para testes reais, mas ainda depende da infraestrutura de produção e da validação regulatória específica antes do primeiro cliente pagante.
+O CI mais recente também validou as rotas separadas `/ponto` e `/admin` e a identidade visual por tenant. O projeto está em **homologação / production hardening**: funcionalmente pronto para testes reais, mas ainda depende da infraestrutura de produção e da validação regulatória específica antes do primeiro cliente pagante.
 
 ## Arquitetura
 
@@ -77,10 +77,7 @@ A cobrança é feita por empresa/tenant, não individualmente por colaborador.
 
 O preço do plano fica no servidor (`CACTUS_PONTO_PLAN_PRICE`) e não é aceito do frontend. A primeira versão da assinatura suporta PIX e boleto. O webhook usa `asaas-access-token` e `ASAAS_WEBHOOK_TOKEN`.
 
-Por padrão, pagamento confirmado/recebido ativa o tenant; cobrança vencida pode suspender o tenant (`BILLING_SUSPEND_ON_OVERDUE=true
-CACTUS_PONTO_BASE_DOMAIN=ponto.cactustecnologia.com.br
-CACTUS_PONTO_CUSTOM_CNAME=custom.ponto.cactustecnologia.com.br
-CACTUS_PONTO_PUBLIC_SCHEME=https`); novo pagamento reativa automaticamente. Como a autenticação consulta `tenants.active`, a suspensão vale também para sessões já existentes nas requisições seguintes.
+Por padrão, pagamento confirmado/recebido ativa o tenant; cobrança vencida pode suspender o tenant (`BILLING_SUSPEND_ON_OVERDUE=true`); novo pagamento reativa automaticamente. Como a autenticação consulta `tenants.active`, a suspensão vale também para sessões já existentes nas requisições seguintes.
 
 Detalhes: [`docs/INTEGRATIONS.md`](docs/INTEGRATIONS.md).
 
@@ -89,6 +86,8 @@ Detalhes: [`docs/INTEGRATIONS.md`](docs/INTEGRATIONS.md).
 O painel de **Empresa & políticas** permite configurar nome exibido, logo e três cores da empresa. A rota pessoal `/ponto` carrega essa identidade diretamente do tenant e aplica o tema somente à experiência do colaborador. No rodapé permanece a assinatura discreta **Desenvolvido por Cactus Tecnologia**.
 
 A API expõe `GET /api/me/branding` apenas para usuários autenticados e retorna somente dados visuais públicos do próprio tenant.
+
+Visão detalhada das experiências: [`docs/EXPERIENCE.md`](docs/EXPERIENCE.md).
 
 ## Rotas de experiência
 
@@ -149,6 +148,10 @@ ASAAS_WEBHOOK_TOKEN=
 CACTUS_PONTO_PLAN_NAME=STANDARD
 CACTUS_PONTO_PLAN_PRICE=0
 BILLING_SUSPEND_ON_OVERDUE=true
+
+CACTUS_PONTO_BASE_DOMAIN=ponto.cactustecnologia.com.br
+CACTUS_PONTO_CUSTOM_CNAME=custom.ponto.cactustecnologia.com.br
+CACTUS_PONTO_PUBLIC_SCHEME=https
 ```
 
 Nunca versione chaves reais.

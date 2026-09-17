@@ -32,6 +32,16 @@ ponto.empresa.com.br CNAME custom.ponto.cactustecnologia.com.br
 
 Depois o ADMIN usa **Verificar DNS**. A API consulta o CNAME e só ativa o domínio quando o destino corresponde a `CACTUS_PONTO_CUSTOM_CNAME`. O endereço Cactus continua disponível como fallback e qualquer domínio verificado pode ser marcado como principal.
 
+### Rotas de experiência
+
+No mesmo domínio da empresa:
+
+- `/ponto` — experiência pessoal do colaborador;
+- `/admin` — experiência administrativa;
+- ADMIN/RH/Gestor com `employee_id` podem alternar para **Meu ponto** sem trocar de conta.
+
+O domínio identifica o tenant; o perfil e o vínculo do usuário definem a rota e as permissões.
+
 ## Rotas
 
 - `GET /api/tenant/domains`

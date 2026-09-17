@@ -87,7 +87,9 @@ Antes de liberar comercialmente, rode a aplicação alguns dias em ambiente real
 - banco de horas;
 - fechamento mensal;
 - exportação CSV;
-- pagamento, vencimento, suspensão e reativação da assinatura.
+- pagamento, vencimento, suspensão e reativação da assinatura;
+- identidade visual do tenant em `/ponto` (nome, logo e cores);
+- alternância segura entre `/admin` e `/ponto` para usuários administrativos que também batem ponto.
 
 ## REP-P / conformidade legal
 
