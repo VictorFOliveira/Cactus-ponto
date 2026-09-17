@@ -1,0 +1,3 @@
+import test from'node:test';import assert from'node:assert/strict';import{billingTransition}from'../src/integrations.js';
+
+test('billing webhook transitions protect tenant access',()=>{assert.deepEqual(billingTransition('PAYMENT_RECEIVED'),{status:'ACTIVE',tenantActive:true});assert.deepEqual(billingTransition('PAYMENT_CONFIRMED'),{status:'ACTIVE',tenantActive:true});assert.equal(billingTransition('PAYMENT_CREATED').status,'PENDING');assert.equal(billingTransition('PAYMENT_REFUNDED').tenantActive,false);assert.equal(billingTransition('PAYMENT_CHARGEBACK_REQUESTED').tenantActive,false);assert.equal(billingTransition('UNKNOWN_EVENT'),null)});
