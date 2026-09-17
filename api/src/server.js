@@ -8,4 +8,4 @@ app.get('/api/me',auth(),(req,res)=>res.json(req.user));
 app.get('/api/dashboard',auth(['ADMIN','MANAGER']),(req,res)=>res.json({employees:48,present:39,late:3,absent:6,hoursBalance:'+126h 40m',pendingAdjustments:4,weekly:[{day:'Seg',value:92},{day:'Ter',value:96},{day:'Qua',value:89},{day:'Qui',value:94},{day:'Sex',value:81}]}));
 app.get('/api/punches',auth(),(req,res)=>res.json(punches.filter(p=>['ADMIN','MANAGER'].includes(req.user.role)||p.userId===req.user.id)));
 app.post('/api/punches',auth(),(req,res)=>{const now=new Date();const nsr=String(100000+punches.length+1);const payload=`${req.user.id}|${now.toISOString()}|${nsr}`;const p={id:crypto.randomUUID(),userId:req.user.id,name:req.user.name,at:now.toISOString(),nsr,hash:crypto.createHash('sha256').update(payload).digest('hex'),source:req.body.source||'WEB'};punches.unshift(p);res.status(201).json(p)});
-app.listen(process.env.PORT||3333,()=>console.log('🌵 Cactus Ponto API :3333'));
+if(process.env.NODE_ENV!=='test')app.listen(process.env.PORT||3333,()=>console.log('🌵 Cactus Ponto API :3333'));export default app;
