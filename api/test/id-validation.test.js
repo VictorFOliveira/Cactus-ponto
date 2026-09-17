@@ -1,0 +1,3 @@
+import test from'node:test';import assert from'node:assert/strict';import{isUuid}from'../src/id-validation.js';
+test('accepts canonical application UUIDs',()=>{assert.equal(isUuid('11111111-1111-4111-8111-111111111111'),true);assert.equal(isUuid('550e8400-e29b-41d4-a716-446655440000'),true)});
+test('rejects values that PostgreSQL uuid columns cannot safely receive',()=>{for(const value of['test','1','../../etc/passwd','550e8400-e29b-41d4-a716', '',null,undefined])assert.equal(isUuid(value),false,String(value))});
