@@ -36,6 +36,9 @@ jobs:
       - name: API dependencies
         working-directory: api
         run: npm install
+      - name: Validate production migrations
+        working-directory: api
+        run: node -e "import('./src/migrate.js').then(async m=>{await m.migrate();const {pool}=await import('./src/db.js');await pool.end()})"
       - name: API tests
         working-directory: api
         run: npm test
