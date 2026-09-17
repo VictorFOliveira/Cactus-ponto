@@ -1,7 +1,1 @@
-import bcrypt from 'bcryptjs';import {query} from './db.js';
-const demo=[
- ['Victor Oliveira','admin@cactusponto.local','ADMIN','22222222-2222-4222-8222-222222222221'],
- ['Marina Costa','gestor@cactusponto.local','MANAGER','22222222-2222-4222-8222-222222222222'],
- ['Lucas Martins','colaborador@cactusponto.local','EMPLOYEE','22222222-2222-4222-8222-222222222223']
-];
-export async function bootstrap(){const tenant='11111111-1111-4111-8111-111111111111';const hash=await bcrypt.hash('Cactus@123',12);for(const [name,email,role,employee] of demo){await query(`INSERT INTO users(tenant_id,employee_id,name,email,password_hash,role) VALUES($1,$2,$3,$4,$5,$6) ON CONFLICT(tenant_id,email) DO NOTHING`,[tenant,employee,name,email,hash,role])}}
+import bcrypt from'bcryptjs';import{query}from'./db.js';const demo=[['Victor Oliveira','admin@cactusponto.local','ADMIN','22222222-2222-4222-8222-222222222221'],['Renata Alves','rh@cactusponto.local','HR','22222222-2222-4222-8222-222222222224'],['Marina Costa','gestor@cactusponto.local','MANAGER','22222222-2222-4222-8222-222222222222'],['Lucas Martins','colaborador@cactusponto.local','EMPLOYEE','22222222-2222-4222-8222-222222222223']];export async function bootstrap(){const tenant='11111111-1111-4111-8111-111111111111',hash=await bcrypt.hash('Cactus@123',12);for(const[name,email,role,employee]of demo)await query(`INSERT INTO users(tenant_id,employee_id,name,email,password_hash,role) VALUES($1,$2,$3,$4,$5,$6) ON CONFLICT(tenant_id,email) DO NOTHING`,[tenant,employee,name,email,hash,role])}
