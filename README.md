@@ -77,9 +77,18 @@ A cobrança é feita por empresa/tenant, não individualmente por colaborador.
 
 O preço do plano fica no servidor (`CACTUS_PONTO_PLAN_PRICE`) e não é aceito do frontend. A primeira versão da assinatura suporta PIX e boleto. O webhook usa `asaas-access-token` e `ASAAS_WEBHOOK_TOKEN`.
 
-Por padrão, pagamento confirmado/recebido ativa o tenant; cobrança vencida pode suspender o tenant (`BILLING_SUSPEND_ON_OVERDUE=true`); novo pagamento reativa automaticamente. Como a autenticação consulta `tenants.active`, a suspensão vale também para sessões já existentes nas requisições seguintes.
+Por padrão, pagamento confirmado/recebido ativa o tenant; cobrança vencida pode suspender o tenant (`BILLING_SUSPEND_ON_OVERDUE=true
+CACTUS_PONTO_BASE_DOMAIN=ponto.cactustecnologia.com.br
+CACTUS_PONTO_CUSTOM_CNAME=custom.ponto.cactustecnologia.com.br
+CACTUS_PONTO_PUBLIC_SCHEME=https`); novo pagamento reativa automaticamente. Como a autenticação consulta `tenants.active`, a suspensão vale também para sessões já existentes nas requisições seguintes.
 
 Detalhes: [`docs/INTEGRATIONS.md`](docs/INTEGRATIONS.md).
+
+## Domínios por empresa
+
+Sem domínio próprio, o pagamento confirmado provisiona `empresa.ponto.cactustecnologia.com.br`. Com domínio próprio, o cliente pode usar `ponto.empresa.com.br` via CNAME para `custom.ponto.cactustecnologia.com.br`, validar o DNS e torná-lo principal. O endereço Cactus permanece como fallback. O mesmo link atende ADMIN, RH, gestor e colaborador; o RBAC decide a experiência após o login.
+
+Detalhes: [`docs/DOMAINS.md`](docs/DOMAINS.md).
 
 ## Usuários de demonstração
 
@@ -113,7 +122,7 @@ Acesso padrão:
 POSTGRES_PASSWORD=
 JWT_SECRET=
 CORS_ORIGINS=http://localhost:8080
-VITE_API_URL=http://localhost:3333/api
+VITE_API_URL=/api
 
 RESEND_API_KEY=
 RESEND_FROM_EMAIL=

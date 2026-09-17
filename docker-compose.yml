@@ -36,6 +36,9 @@ services:
       CACTUS_PONTO_PLAN_NAME: ${CACTUS_PONTO_PLAN_NAME:-STANDARD}
       CACTUS_PONTO_PLAN_PRICE: ${CACTUS_PONTO_PLAN_PRICE:-0}
       BILLING_SUSPEND_ON_OVERDUE: ${BILLING_SUSPEND_ON_OVERDUE:-true}
+      CACTUS_PONTO_BASE_DOMAIN: ${CACTUS_PONTO_BASE_DOMAIN:-ponto.cactustecnologia.com.br}
+      CACTUS_PONTO_CUSTOM_CNAME: ${CACTUS_PONTO_CUSTOM_CNAME:-custom.ponto.cactustecnologia.com.br}
+      CACTUS_PONTO_PUBLIC_SCHEME: ${CACTUS_PONTO_PUBLIC_SCHEME:-https}
     ports:
       - "3333:3333"
     depends_on:
@@ -47,7 +50,7 @@ services:
     build:
       context: ./web
       args:
-        VITE_API_URL: ${VITE_API_URL:-http://localhost:3333/api}
+        VITE_API_URL: ${VITE_API_URL:-/api}
     ports:
       - "8080:80"
     depends_on:
