@@ -13,16 +13,33 @@ services:
       interval: 5s
       timeout: 3s
       retries: 10
-  app:
-    build: .
+    restart: unless-stopped
+
+  api:
+    build:
+      context: ./api
     environment:
-      PORT: 3000
+      PORT: 3333
+      NODE_ENV: production
+      JWT_SECRET: ${JWT_SECRET:-change-this-in-production}
       DATABASE_URL: postgresql://cactus:${POSTGRES_PASSWORD:-cactus_dev}@db:5432/cactus_ponto
     ports:
-      - "3000:3000"
+      - "3333:3333"
     depends_on:
       db:
         condition: service_healthy
     restart: unless-stopped
+
+  web:
+    build:
+      context: ./web
+      args:
+        VITE_API_URL: ${VITE_API_URL:-http://localhost:3333/api}
+    ports:
+      - "8080:80"
+    depends_on:
+      - api
+    restart: unless-stopped
+
 volumes:
   ponto_data:
