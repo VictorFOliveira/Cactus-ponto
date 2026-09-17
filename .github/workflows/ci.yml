@@ -3,8 +3,7 @@ on:
   push:
     branches: [main]
   pull_request:
-permissions:
-  contents: read
+    branches: [main]
 jobs:
   validate:
     runs-on: ubuntu-latest
@@ -13,6 +12,17 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: npm install
-      - run: npm run check
-      - run: docker compose config
+      - name: API dependencies
+        working-directory: api
+        run: npm install
+      - name: API syntax
+        working-directory: api
+        run: node --check src/server.js
+      - name: Web dependencies
+        working-directory: web
+        run: npm install
+      - name: Build web
+        working-directory: web
+        run: npm run build
+      - name: Validate compose
+        run: docker compose config
