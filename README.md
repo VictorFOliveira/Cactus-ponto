@@ -84,6 +84,16 @@ CACTUS_PONTO_PUBLIC_SCHEME=https`); novo pagamento reativa automaticamente. Como
 
 Detalhes: [`docs/INTEGRATIONS.md`](docs/INTEGRATIONS.md).
 
+## Rotas de experiência
+
+O mesmo domínio da empresa possui experiências separadas:
+
+- `/ponto` — área pessoal de registro de ponto. Qualquer usuário com `employee_id` vinculado pode acessar, inclusive ADMIN, RH ou gestor que também seja colaborador;
+- `/admin` — área administrativa, restrita aos perfis administrativos;
+- usuários administrativos vinculados a colaborador recebem o atalho **Meu ponto** e podem alternar entre as duas áreas sem trocar de conta.
+
+A área `/ponto` usa endpoints pessoais `/api/me/*`, que sempre derivam o colaborador da sessão e nunca aceitam outro `employee_id` informado pelo navegador.
+
 ## Domínios por empresa
 
 Sem domínio próprio, o pagamento confirmado provisiona `empresa.ponto.cactustecnologia.com.br`. Com domínio próprio, o cliente pode usar `ponto.empresa.com.br` via CNAME para `custom.ponto.cactustecnologia.com.br`, validar o DNS e torná-lo principal. O endereço Cactus permanece como fallback. O mesmo link atende ADMIN, RH, gestor e colaborador; o RBAC decide a experiência após o login.
