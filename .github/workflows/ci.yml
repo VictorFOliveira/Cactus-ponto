@@ -24,6 +24,7 @@ jobs:
     env:
       DATABASE_URL: postgresql://cactus:cactus_test@localhost:5432/cactus_ponto
       JWT_SECRET: cactus-ci-secret
+      NODE_ENV: test
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -32,7 +33,7 @@ jobs:
       - name: Initialize database
         env:
           PGPASSWORD: cactus_test
-        run: psql -h localhost -U cactus -d cactus_ponto -f db/init.sql
+        run: psql -v ON_ERROR_STOP=1 -h localhost -U cactus -d cactus_ponto -f db/init.sql
       - name: API dependencies
         working-directory: api
         run: npm install
