@@ -8,6 +8,15 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     services:
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
       postgres:
         image: postgres:17-alpine
         env:
@@ -23,6 +32,12 @@ jobs:
           --health-retries 10
     env:
       DATABASE_URL: postgresql://cactus:cactus_test@localhost:5432/cactus_ponto
+      REDIS_URL: redis://localhost:6379
+      REDIS_PREFIX: cactus:test
+      RATE_LIMIT_API: 10000
+      RATE_LIMIT_USER: 10000
+      RATE_LIMIT_LOGIN: 1000
+      RATE_LIMIT_PUNCH: 1000
       JWT_SECRET: cactus-ci-secret
       NODE_ENV: test
     steps:

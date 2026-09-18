@@ -15,6 +15,16 @@ services:
       retries: 10
     restart: unless-stopped
 
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server","--save","","--appendonly","no","--maxmemory-policy","allkeys-lru"]
+    healthcheck:
+      test: ["CMD","redis-cli","ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+
   api:
     build:
       context: ./api
@@ -23,6 +33,11 @@ services:
       NODE_ENV: production
       JWT_SECRET: ${JWT_SECRET:-cactus-local-development-secret-change-before-production-123456}
       DATABASE_URL: postgresql://cactus:${POSTGRES_PASSWORD:-cactus_dev}@db:5432/cactus_ponto
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379}
+      REDIS_PREFIX: ${REDIS_PREFIX:-cactus:ponto}
+      CACHE_TTL_BRANDING: ${CACHE_TTL_BRANDING:-120}
+      CACHE_TTL_DOMAIN: ${CACHE_TTL_DOMAIN:-120}
+      CACHE_TTL_DASHBOARD: ${CACHE_TTL_DASHBOARD:-20}
       CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:8080}
       RATE_LIMIT_API: ${RATE_LIMIT_API:-240}
       RATE_LIMIT_USER: ${RATE_LIMIT_USER:-180}
@@ -43,6 +58,8 @@ services:
       - "3333:3333"
     depends_on:
       db:
+        condition: service_healthy
+      redis:
         condition: service_healthy
     restart: unless-stopped
 

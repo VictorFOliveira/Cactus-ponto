@@ -22,7 +22,8 @@ Cactus Ponto
 Fluxo principal:
 
 ```text
-Web/PWA → API → PostgreSQL
+Web/PWA → API → Redis (cache/rate limit)
+             ↘ PostgreSQL (fonte de verdade)
              ↘ Resend
              ↘ Asaas
 ```
@@ -135,6 +136,12 @@ Acesso padrão:
 
 ```env
 POSTGRES_PASSWORD=
+REDIS_URL=redis://redis:6379
+REDIS_PREFIX=cactus:ponto
+CACHE_TTL_BRANDING=120
+CACHE_TTL_DOMAIN=120
+CACHE_TTL_DASHBOARD=20
+
 JWT_SECRET=
 CORS_ORIGINS=http://localhost:8080
 VITE_API_URL=/api
@@ -155,6 +162,21 @@ CACTUS_PONTO_PUBLIC_SCHEME=https
 ```
 
 Nunca versione chaves reais.
+
+## Redis, cache e rate limit distribuído
+
+O Redis é uma camada **opcional de aceleração**, nunca a fonte de verdade. PostgreSQL continua sendo o registro oficial de marcações, jornadas, banco de horas, fechamentos, auditoria e dados pessoais.
+
+Uso atual:
+
+- resolução `Host/domínio → tenant` (TTL padrão 120 s, com cache negativo curto);
+- identidade visual do tenant em `/ponto` (TTL padrão 120 s);
+- dashboard administrativo (TTL padrão 20 s);
+- rate limits compartilhados entre múltiplas instâncias da API.
+
+Alterações de branding e domínio invalidam as chaves correspondentes. Marcações, criação de colaborador e revisão de ajuste invalidam o dashboard. Se o Redis estiver indisponível, a aplicação continua funcionando: cache volta ao PostgreSQL e rate limit usa memória local temporariamente.
+
+Detalhes: [`docs/CACHE.md`](docs/CACHE.md).
 
 ## Privacidade e LGPD
 

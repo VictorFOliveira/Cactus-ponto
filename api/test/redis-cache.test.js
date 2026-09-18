@@ -1,0 +1,5 @@
+import test from'node:test';import assert from'node:assert/strict';import{cacheSet,cacheGet,cacheDel,rateLimitHit,redisStatus,closeRedis}from'../src/redis.js';
+test('redis cache roundtrip and explicit invalidation',async()=>{if(!process.env.REDIS_URL)return;const key='test:cache:'+process.pid;assert.equal(await cacheSet(key,{ok:true},30),true);assert.deepEqual(await cacheGet(key),{ok:true});assert.equal(await cacheDel(key),true);assert.equal(await cacheGet(key),null)});
+test('redis rate limiter counter is shared and atomic',async()=>{if(!process.env.REDIS_URL)return;const key='test:rate:'+process.pid+':'+Date.now(),a=await rateLimitHit(key,30000),b=await rateLimitHit(key,30000);assert.equal(a.count,1);assert.equal(b.count,2);assert.ok(b.ttlMs>0)});
+test('redis health reports ready in CI',async()=>{if(!process.env.REDIS_URL)return;const s=await redisStatus();assert.equal(s.configured,true);assert.equal(s.ready,true);assert.equal(s.mode,'redis')});
+test.after(async()=>{await closeRedis()});

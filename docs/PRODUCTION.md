@@ -9,6 +9,7 @@ Estado atual: o núcleo funcional passou pela regressão destrutiva e o CI valid
 - reverse proxy (Nginx, Traefik ou equivalente);
 - `JWT_SECRET` aleatório com pelo menos 32 caracteres;
 - senha forte e exclusiva do PostgreSQL;
+- Redis interno/não exposto publicamente para cache e rate limit distribuído;
 - `CORS_ORIGINS` limitado aos domínios oficiais;
 - chave de produção do Asaas armazenada como secret;
 - webhook Asaas com `authToken` exclusivo;
@@ -43,6 +44,7 @@ HTTPS / Reverse Proxy
 Web React/PWA ─────→ API Node/Express
                          ↓
                     PostgreSQL
+                         ↘ Redis (cache/rate limit, rede interna)
 ```
 
 O PostgreSQL não deve ser exposto publicamente. A API também pode ficar acessível apenas pelo proxy, sem publicar a porta `3333` diretamente na Internet.
