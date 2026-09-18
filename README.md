@@ -217,7 +217,7 @@ A API já aplica headers de segurança, CORS por allowlist, rate limits, valida�
 
 ## Regressão destrutiva
 
-A regressão completa está documentada em [`docs/REGRESSION.md`](docs/REGRESSION.md). Além do CI normal, o projeto mantém uma suíte destrutiva isolada para validar bootstrap limpo, autenticação/RBAC, isolamento multi-tenant, Redis/fallback, privacidade, domínio, jornada e integridade do schema.
+A regressão completa está documentada em [`docs/REGRESSION.md`](docs/REGRESSION.md). Além do CI normal, o projeto mantém uma suíte destrutiva isolada para validar bootstrap limpo, autenticação/RBAC, isolamento multi-tenant, Redis/fallback, privacidade, domínio, jornada e integridade do schema. A execução observada após a inclusão dessa suíte (CI #210) passou nos jobs `validate` e `destructive-regression`.
 
 ## CI
 

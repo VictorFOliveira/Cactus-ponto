@@ -95,3 +95,36 @@ O pipeline só é considerado aprovado quando:
 6. Compose valida.
 
 Quando um teste destrutivo revela uma falha, a correção deve ganhar teste de regressão antes do próximo verde.
+
+
+## Última execução observada
+
+Execução: **CI #210**  
+Commit testado: `9814300`
+
+Resultado observado:
+
+- job `validate`: **SUCCESS**;
+- PostgreSQL limpo: **SUCCESS**;
+- Redis real no CI: **SUCCESS**;
+- migrations: **SUCCESS**;
+- suíte completa da API: **SUCCESS**;
+- build Web: **SUCCESS**;
+- `docker compose config`: **SUCCESS**;
+- job isolado `destructive-regression`: **SUCCESS**.
+
+A regressão destrutiva adicional validou:
+
+- Redis disponível e health reportando `redis`;
+- negação de acesso sem autenticação;
+- invalidação de cache de branding;
+- invalidação de dashboard após criação de colaborador;
+- exportação LGPD sem `password_hash`;
+- criação, revisão e retorno de solicitação do titular;
+- dois tenants com o mesmo e-mail isolados por domínio/Host;
+- JWT de um tenant recusado no Host de outro;
+- contador Redis compartilhado;
+- fallback quando Redis é desabilitado;
+- ausência de e-mail/CPF conhecidos nas chaves/valores do cache de aplicação.
+
+Nenhuma nova quebra funcional foi encontrada nessa execução. Falhas futuras devem gerar correção + teste antes de considerar o pipeline aprovado.
