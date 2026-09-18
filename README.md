@@ -156,6 +156,27 @@ CACTUS_PONTO_PUBLIC_SCHEME=https
 
 Nunca versione chaves reais.
 
+## Privacidade e LGPD
+
+O produto possui uma camada técnica de privacidade por design:
+
+- respostas da API privadas com `Cache-Control: no-store`;
+- headers de segurança e CORS efetivamente aplicados à API;
+- CSP, anti-framing e `noindex` no Web/PWA;
+- endpoint autenticado `GET /api/me/privacy` com informações do controlador;
+- exportação estruturada dos dados do próprio titular em `GET /api/me/privacy/export`;
+- fluxo de solicitações do titular (acesso, correção, anonimização, eliminação, portabilidade, informação sobre compartilhamento, oposição e outros pedidos);
+- fila administrativa auditada para tratamento pelo controlador;
+- isolamento das solicitações por `tenant_id`;
+- tela **Privacidade e meus dados** para o usuário;
+- configurações de canal de privacidade, encarregado/responsável, política e aviso de retenção;
+- endpoint genérico de configurações não expõe nem permite sobrescrever o objeto de cobrança;
+- pedidos de exclusão/anonimização não apagam automaticamente registros trabalhistas: exigem análise do controlador e da obrigação de retenção aplicável.
+
+Esses controles **não equivalem a certificação de conformidade jurídica**. Papéis de controlador/operador, bases legais, prazos de retenção, contratos, RIPD quando aplicável e procedimentos internos precisam refletir a operação real de cada cliente.
+
+Documentação: [`docs/PRIVACY.md`](docs/PRIVACY.md).
+
 ## Segurança
 
 Em produção:

@@ -71,7 +71,21 @@ Backup sem teste de restauração não deve ser considerado proteção suficient
 - validação de UUIDs e datas em rotas críticas;
 - auditoria de operações sensíveis;
 - fechamento de competência com locks e proteção contra corrida;
-- webhook Asaas autenticado por token próprio.
+- webhook Asaas autenticado por token próprio;
+- API com `no-store`, anti-indexação e headers de segurança;
+- CSP e anti-framing no frontend;
+- fluxo de direitos do titular e exportação self-service;
+- auditoria de solicitações de privacidade.
+
+## Resposta a incidentes e LGPD
+
+Além dos controles técnicos, produção precisa de processo operacional. O controlador deve manter responsáveis, canal de privacidade, inventário de tratamento, política de retenção e plano de resposta a incidentes.
+
+Pelo Regulamento de Comunicação de Incidente de Segurança da ANPD (Resolução CD/ANPD nº 15/2024), quando o incidente puder acarretar risco ou dano relevante aos titulares, a comunicação pelo controlador à ANPD e aos titulares deve observar o prazo regulamentar de **3 dias úteis**, ressalvada legislação específica.
+
+O Cactus Ponto registra auditoria e reduz exposição por cache/CORS/CSP, mas a decisão sobre notificação, investigação, preservação de evidências e comunicação é um processo organizacional do controlador.
+
+Consulte [`PRIVACY.md`](PRIVACY.md).
 
 ## Homologação real
 

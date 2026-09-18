@@ -130,3 +130,25 @@ O site institucional da Cactus Tecnologia possui uma demonstração visual das d
 - central administrativa do RH/ADMIN.
 
 A demonstração é ilustrativa, mas acompanha a arquitetura e o fluxo atuais do produto.
+
+## 7. Privacidade e dados do próprio usuário
+
+Qualquer usuário autenticado pode abrir `/privacidade`. A tela permite consultar o controlador/canal de contato, baixar uma cópia estruturada dos dados do próprio usuário e registrar solicitações de titular.
+
+Rotas pessoais:
+
+```
+GET  /api/me/privacy
+GET  /api/me/privacy/export
+GET  /api/me/privacy/requests
+POST /api/me/privacy/requests
+```
+
+ADMIN/RH tratam solicitações pela fila administrativa:
+
+```
+GET   /api/privacy/requests
+PATCH /api/privacy/requests/:id
+```
+
+Nenhuma dessas rotas permite escolher outro `tenant_id`. A identidade é derivada da sessão autenticada.
