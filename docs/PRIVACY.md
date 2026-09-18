@@ -205,3 +205,9 @@ A Resolução CD/ANPD nº 19/2024 deve ser considerada quando existir transferê
 ## Limites
 
 A presença dessas funcionalidades não autoriza divulgar “100% conforme LGPD”, “certificado LGPD” ou equivalentes. Conformidade depende de tecnologia, contratos, governança e operação real.
+
+## Cache e privacidade
+
+Redis foi limitado a modelos de leitura de baixo risco (branding, resolução de domínio, dashboard agregado e rate limit). Não são cacheados pela camada de aplicação: exportações LGPD, solicitações do titular, histórico pessoal de marcações, respostas da fila de privacidade, hashes de senha ou auditoria.
+
+O cache é efêmero e possui TTL curto. PostgreSQL permanece como fonte de verdade. Em produção, Redis deve ficar em rede privada e, quando gerenciado externamente, usar autenticação/TLS conforme o provedor.

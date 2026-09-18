@@ -152,3 +152,7 @@ PATCH /api/privacy/requests/:id
 ```
 
 Nenhuma dessas rotas permite escolher outro `tenant_id`. A identidade é derivada da sessão autenticada.
+
+## 8. Desempenho da experiência
+
+A tela `/ponto` pode reutilizar branding do tenant via Redis por curto período. O dashboard `/admin` usa cache agregado curto. Operações sensíveis e dados pessoais detalhados permanecem consultados no PostgreSQL; marcações, solicitações LGPD e fechamento não dependem de cache para integridade.

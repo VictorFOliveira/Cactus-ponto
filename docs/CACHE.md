@@ -77,3 +77,9 @@ A configuração é deliberadamente efêmera (`appendonly no`), pois o conteúdo
 - monitore memória, eviction, latência e taxa de erro;
 - não aumente TTL de dados operacionais sem revisar a estratégia de invalidação;
 - não use Redis como mecanismo de retenção ou arquivo legal.
+
+## Observabilidade
+
+O endpoint `GET /api/health` informa `cache.mode`, `cache.ready` e latência quando o Redis está disponível. Alertas de produção devem observar indisponibilidade prolongada, latência elevada e eviction anormal.
+
+Cache nunca deve mascarar falha do PostgreSQL: se o banco estiver indisponível, o health geral deve degradar mesmo que Redis esteja saudável.

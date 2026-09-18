@@ -6,9 +6,11 @@ Plataforma SaaS multi-tenant da Cactus Tecnologia para gestão de jornada, regis
 
 O núcleo funcional passou por regressão destrutiva cobrindo autenticação, autorização, isolamento entre tenants, cadastro/importação de colaboradores, jornadas, marcações, concorrência/idempotência, virada de madrugada, ajustes, apuração, banco de horas, fechamento, histórico e exportação.
 
-O CI mais recente também validou as rotas separadas `/ponto` e `/admin` e a identidade visual por tenant. O projeto está em **homologação / production hardening**: funcionalmente pronto para testes reais, mas ainda depende da infraestrutura de produção e da validação regulatória específica antes do primeiro cliente pagante.
+O CI mais recente também validou as rotas separadas `/ponto` e `/admin`, identidade visual por tenant, controles de privacidade/LGPD e Redis para cache/rate limit distribuído. O projeto está em **homologação / production hardening**: funcionalmente pronto para testes reais, mas ainda depende da infraestrutura de produção e da validação regulatória específica antes do primeiro cliente pagante.
 
 ## Arquitetura
+
+Documentação detalhada: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 
 ```text
 Cactus Ponto
@@ -212,6 +214,10 @@ Em produção:
 - não exponha PostgreSQL publicamente.
 
 A API já aplica headers de segurança, CORS por allowlist, rate limits, validações de entrada, isolamento por tenant, locks de concorrência e auditoria de operações sensíveis.
+
+## Regressão destrutiva
+
+A regressão completa está documentada em [`docs/REGRESSION.md`](docs/REGRESSION.md). Além do CI normal, o projeto mantém uma suíte destrutiva isolada para validar bootstrap limpo, autenticação/RBAC, isolamento multi-tenant, Redis/fallback, privacidade, domínio, jornada e integridade do schema.
 
 ## CI
 

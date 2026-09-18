@@ -49,6 +49,18 @@ Web React/PWA ─────→ API Node/Express
 
 O PostgreSQL não deve ser exposto publicamente. A API também pode ficar acessível apenas pelo proxy, sem publicar a porta `3333` diretamente na Internet.
 
+## Redis em produção
+
+Redis é dependência de desempenho, não de integridade. Recomendações:
+
+- manter em rede privada;
+- não publicar 6379;
+- usar autenticação/TLS quando fora da rede Docker;
+- definir memória/eviction adequadas;
+- monitorar latência, uso de memória e falhas;
+- validar periodicamente o fallback sem Redis;
+- não persistir nele dados que não existam no PostgreSQL.
+
 ## Backups
 
 Recomendação inicial:

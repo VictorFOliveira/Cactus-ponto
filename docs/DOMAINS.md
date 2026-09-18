@@ -68,3 +68,7 @@ CACTUS_PONTO_PUBLIC_SCHEME=https
 ```
 
 O gateway de borda ainda precisa emitir/renovar TLS para wildcard e domínios próprios verificados. Para domínio próprio, só permita provisionamento de certificado após a verificação DNS.
+
+## Cache de resolução
+
+A resolução `Host → tenant_id` utiliza Redis com TTL curto para reduzir consultas repetidas ao PostgreSQL. Domínios inexistentes podem receber cache negativo curto. Criação, verificação e remoção invalidam a chave correspondente. Redis não é fonte de verdade: em falha, a resolução volta ao PostgreSQL.

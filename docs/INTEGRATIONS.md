@@ -117,3 +117,7 @@ A infraestrutura de backend está pré-configurada, mas a experiência comercial
 Resend e Asaas são integrações externas e podem participar da cadeia de tratamento conforme a configuração usada pelo cliente. Antes da produção, contratos, localização do tratamento, subprocessadores e eventual transferência internacional devem ser avaliados conforme o arranjo real entre Cactus Tecnologia, cliente e fornecedor.
 
 A Resolução CD/ANPD nº 19/2024 regulamenta transferência internacional de dados e cláusulas-padrão contratuais. Não presuma conformidade apenas por utilizar um fornecedor conhecido: documente finalidade, dados enviados e salvaguardas aplicáveis.
+
+## 7. Cache e integrações externas
+
+Resend e Asaas não usam Redis como fila durável nem como registro oficial. O webhook Asaas continua persistindo estado de cobrança e auditoria no PostgreSQL. Falha do Redis não pode causar perda de evento de cobrança; qualquer uso futuro de fila deve possuir persistência/retry apropriado e idempotência.
