@@ -33,6 +33,7 @@ Web/PWA → API → Redis (cache/rate limit)
 ## Funcionalidades atuais
 
 - autenticação JWT com identidade revalidada no banco;
+- sessões revogáveis por `auth_version` e MFA TOTP para perfis administrativos, com códigos de recuperação;
 - RBAC: Administrador, RH, Gestor e Colaborador;
 - isolamento multi-tenant por `tenant_id`;
 - dashboard operacional;
