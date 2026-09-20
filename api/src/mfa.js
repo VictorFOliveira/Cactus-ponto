@@ -74,7 +74,7 @@ export function mfaRoutes({auth,issueSession,jwtSecret}){
 
   r.get('/security/mfa/status',auth(),async(req,res,next)=>{try{
     const u=await userForMfa(req.user.id,req.user.tenantId);
-    res.json({enabled:Boolean(u?.mfa_enabled),requiredForAdmin:String(process.env.REQUIRE_ADMIN_MFA||'true')!=='false'&&['ADMIN','HR'].includes(req.user.role)})
+    res.json({enabled:Boolean(u?.mfa_enabled),requiredForAdmin:((process.env.NODE_ENV==='production'&&String(process.env.REQUIRE_ADMIN_MFA||'true')!=='false')||String(process.env.REQUIRE_ADMIN_MFA||'').toLowerCase()==='true')&&['ADMIN','HR'].includes(req.user.role)})
   }catch(e){next(e)}});
 
   r.post('/security/mfa/setup',auth(),async(req,res,next)=>{try{
